@@ -1,108 +1,74 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { View, ScrollView, StatusBar, useColorScheme, SafeAreaView } from 'react-native';
+import styled from 'styled-components/native';
+import { Colors, Header } from 'react-native/Libraries/NewAppScreen';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
+// SectionProps 타입 정의
+type SectionProps = {
   title: string;
-}>;
+  children: React.ReactNode;
+};
 
-function Section({children, title}: SectionProps): React.JSX.Element {
+// Styled Components 정의
+const SectionContainer = styled.View`
+  margin-top: 32px;
+  padding-horizontal: 24px;
+`;
+
+const SectionTitle = styled.Text<{ isDarkMode: boolean }>`
+  font-size: 24px;
+  font-weight: 600;
+  color: ${({ isDarkMode }) => (isDarkMode ? Colors.white : Colors.black)};
+`;
+
+const SectionDescription = styled.Text<{ isDarkMode: boolean }>`
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 400;
+  color: ${({ isDarkMode }) => (isDarkMode ? Colors.light : Colors.dark)};
+`;
+
+// Section 컴포넌트
+function Section({ children, title }: SectionProps): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+    <SectionContainer>
+      <SectionTitle isDarkMode={isDarkMode}>{title}</SectionTitle>
+      <SectionDescription isDarkMode={isDarkMode}>{children}</SectionDescription>
+    </SectionContainer>
   );
 }
+
+// App 컴포넌트
+const Background = styled(SafeAreaView)<{ isDarkMode: boolean }>`
+  background-color: ${({ isDarkMode }) =>
+    isDarkMode ? Colors.darker : Colors.lighter};
+`;
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <Background isDarkMode={isDarkMode}>
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+        backgroundColor={isDarkMode ? Colors.darker : Colors.lighter}
       />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
+        style={{ backgroundColor: isDarkMode ? Colors.darker : Colors.lighter }}>
         <Header />
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <Section title="하이">
-           리액트 네이티브 메인화면!
+            리액트 네이티브 메인화면!
           </Section>
-
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </Background>
   );
 }
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
