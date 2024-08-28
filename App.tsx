@@ -65,6 +65,9 @@ function App(): React.JSX.Element {
           <Section title="하이">
             리액트 네이티브 메인화면!
           </Section>
+           <Section>
+            벼락치기!!!
+          </Section>
         </View>
       </ScrollView>
     </Background>
