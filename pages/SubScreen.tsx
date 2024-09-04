@@ -16,7 +16,7 @@ const ScreenText = styled.Text<{ isDarkMode: boolean }>`
   color: ${({ isDarkMode }) => (isDarkMode ? Colors.white : Colors.black)};
 `;
 
-function SubScreen(): React.JSX.Element {
+function SubScreen({ navigation }: { navigation: any }): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
