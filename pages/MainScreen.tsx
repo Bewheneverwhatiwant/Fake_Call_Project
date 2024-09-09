@@ -96,8 +96,8 @@ function MainScreen({ navigation }: { navigation: any }): React.JSX.Element {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
             minHeight: screenHeight, // 내부 View도 화면 높이로 설정
           }}>
-          <Section title="하이">
-            리액트 네이티브 메인화면!
+          <Section>
+            리액트 네이티브 메인화면!\
           </Section>
 
           <CustomColumn height="50px">
