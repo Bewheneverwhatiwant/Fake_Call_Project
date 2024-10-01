@@ -1,64 +1,42 @@
-import React from 'react';
-import { View, ScrollView, StatusBar, useColorScheme, SafeAreaView, Text, TouchableOpacity, Dimensions } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  ScrollView,
+  StatusBar,
+  useColorScheme,
+  SafeAreaView,
+  Text,
+  TouchableOpacity,
+  Dimensions,
+  TextInput,
+  ActivityIndicator,
+  Modal,
+  Button,
+} from 'react-native';
 import styled from 'styled-components/native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // localStorage 대체
 
-import CustomButton from '../components/basic/CustomButton';
-import CustomRow from '../components/basic/CustomRow';
-import CustomColumn from '../components/basic/CustomColumn';
-import CustomFont from '../components/basic/CustomFont';
-
-// 화면의 높이를 가져옴
 const { height: screenHeight } = Dimensions.get('window');
 
-//type script 사용법
-
-// (0) Section이라는 스타일 속성을 만들기 위해, SectionProps 타입 먼저 정의한다.
-type SectionProps = {
-  title: string;
-  children: React.ReactNode;
-};
-
-// (1) Styled Component로 컨테이너 스타일 지정
+// Styled components 정의
 const SectionContainer = styled.View`
   margin-top: 32px;
   padding-horizontal: 24px;
 `;
 
-// (2) 타이틀 스타일 지정
 const SectionTitle = styled.Text<{ isDarkMode: boolean }>`
   font-size: 24px;
   font-weight: 600;
   color: ${({ isDarkMode }) => (isDarkMode ? Colors.white : Colors.black)};
 `;
 
-// (3) description 스타일 지정
-const SectionDescription = styled.Text<{ isDarkMode: boolean }>`
-  margin-top: 8px;
-  font-size: 18px;
-  font-weight: 400;
-  color: ${({ isDarkMode }) => (isDarkMode ? Colors.light : Colors.dark)};
-`;
-
-// (0) + (1) + (2) + (3) = Section 컴포넌트가 된다!
-function Section({ children, title }: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <SectionContainer>
-      <SectionTitle isDarkMode={isDarkMode}>{title}</SectionTitle>
-      <SectionDescription isDarkMode={isDarkMode}>{children}</SectionDescription>
-    </SectionContainer>
-  );
-}
-
-// Background 스타일 정의
 const Background = styled(SafeAreaView)<{ isDarkMode: boolean }>`
   background-color: ${({ isDarkMode }) =>
     isDarkMode ? Colors.darker : Colors.lighter};
-  min-height: ${screenHeight}px; /* 숫자 값만 사용 */
+  min-height: ${screenHeight}px;
 `;
 
-// 버튼 스타일 정의
 const StyledButton = styled(TouchableOpacity)`
   width: 200px;
   padding: 10px;
@@ -68,16 +46,63 @@ const StyledButton = styled(TouchableOpacity)`
   margin-top: 20px;
 `;
 
-// StyledButtonText styled component
 const StyledButtonText = styled(Text)`
   color: white;
   font-size: 16px;
   font-weight: 600;
 `;
 
-// MainScreen 컴포넌트
+const GearButton = styled(TouchableOpacity)`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+`;
+
+const GearIcon = styled(Text)`
+  font-size: 30px;
+`;
+
 function MainScreen({ navigation }: { navigation: any }): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+
+  const [senderName, setSenderName] = useState('');
+  const [senderNumber, setSenderNumber] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPickerVisible, setIsPickerVisible] = useState(false);
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(15);
+  const [seconds, setSeconds] = useState(0);
+  const [selectedTime, setSelectedTime] = useState("발신 시각 예약");
+
+  const handleSaveAndNavigate = async () => {
+    if (senderName && senderNumber) {
+      setIsLoading(true);
+
+      try {
+        await AsyncStorage.setItem('senderName', senderName);
+        await AsyncStorage.setItem('senderNumber', senderNumber);
+
+        setTimeout(() => {
+          setIsLoading(false);
+          navigation.navigate('GetAFakeCall');
+        }, 2000);
+      } catch (error) {
+        console.error('Error saving sender info: ', error);
+        setIsLoading(false);
+      }
+    } else {
+      alert('발신자명과 번호를 입력해주세요.');
+    }
+  };
+
+  const openPicker = () => {
+    setIsPickerVisible(true);
+  };
+
+  const handleConfirmTime = () => {
+    setSelectedTime(`${hours}시간 ${minutes}분 ${seconds}초`);
+    setIsPickerVisible(false);
+  };
 
   return (
     <Background isDarkMode={isDarkMode}>
@@ -89,24 +114,125 @@ function MainScreen({ navigation }: { navigation: any }): React.JSX.Element {
         contentInsetAdjustmentBehavior="automatic"
         style={{
           backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-          minHeight: screenHeight, // ScrollView도 화면 높이로 설정
+          minHeight: screenHeight,
         }}>
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            minHeight: screenHeight, // 내부 View도 화면 높이로 설정
+            minHeight: screenHeight,
+            padding: 20,
           }}>
-          <Section>
-            리액트 네이티브 메인화면!\
-          </Section>
+          <SectionContainer>
+            <SectionTitle isDarkMode={isDarkMode}>발신자 정보를 입력해주세요</SectionTitle>
 
-          <CustomColumn height="50px">
-            <CustomRow alignitems="center" justifycontent="center">
-              <CustomButton width="60%" onPress={() => navigation.navigate('GetAFakeCall')}>
-                <CustomFont>가짜 전화 받으러 이동</CustomFont>
-              </CustomButton>
-            </CustomRow>
-          </CustomColumn>
+            <TextInput
+              placeholder="발신자명"
+              value={senderName}
+              onChangeText={setSenderName}
+              style={{
+                borderBottomWidth: 1,
+                borderColor: 'gray',
+                marginBottom: 20,
+                padding: 10,
+                fontSize: 18,
+              }}
+            />
+            <TextInput
+              placeholder="발신자 번호"
+              value={senderNumber}
+              onChangeText={setSenderNumber}
+              style={{
+                borderBottomWidth: 1,
+                borderColor: 'gray',
+                marginBottom: 20,
+                padding: 10,
+                fontSize: 18,
+              }}
+            />
+
+            {/* 발신 시각 예약 버튼 */}
+            <TouchableOpacity
+              onPress={openPicker}
+              style={{
+                borderBottomWidth: 1,
+                borderColor: 'gray',
+                marginBottom: 20,
+                padding: 10,
+                fontSize: 18,
+              }}>
+              <Text>{selectedTime}</Text>
+            </TouchableOpacity>
+
+            <StyledButton onPress={handleSaveAndNavigate}>
+              <StyledButtonText>통화 예약하기</StyledButtonText>
+            </StyledButton>
+
+            {isLoading && (
+              <ActivityIndicator size="large" color="#6200ee" style={{ marginTop: 20 }} />
+            )}
+
+            {/* 발신 시각 예약 모달 */}
+            <Modal visible={isPickerVisible} animationType="slide" transparent={true}>
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                }}>
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    padding: 20,
+                    borderRadius: 10,
+                    alignItems: 'center',
+                  }}>
+                  <Text>시간을 선택하세요</Text>
+
+                  {/* 시간 선택 드롭다운 */}
+                  <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                    <TextInput
+                      keyboardType="numeric"
+                      value={String(hours)}
+                      onChangeText={(text) => setHours(parseInt(text) || 0)}
+                      style={{ width: 50, textAlign: 'center', marginHorizontal: 10 }}
+                      placeholder="시"
+                    />
+                    <Text>시간</Text>
+
+                    <Text>:</Text>
+
+                    <TextInput
+                      keyboardType="numeric"
+                      value={String(minutes)}
+                      onChangeText={(text) => setMinutes(parseInt(text) || 0)}
+                      style={{ width: 50, textAlign: 'center', marginHorizontal: 10 }}
+                      placeholder="분"
+                    />
+                    <Text>분</Text>
+
+                    <Text>:</Text>
+
+                    <TextInput
+                      keyboardType="numeric"
+                      value={String(seconds)}
+                      onChangeText={(text) => setSeconds(parseInt(text) || 0)}
+                      style={{ width: 50, textAlign: 'center', marginHorizontal: 10 }}
+                      placeholder="초"
+                    />
+                    <Text>초</Text>
+                  </View>
+
+                  <Button title="확인" onPress={handleConfirmTime} />
+                </View>
+              </View>
+            </Modal>
+          </SectionContainer>
+
+          {/* 톱니바퀴 버튼 */}
+          <GearButton onPress={() => navigation.navigate('mainSetting')}>
+            <GearIcon>⚙️</GearIcon>
+          </GearButton>
         </View>
       </ScrollView>
     </Background>
