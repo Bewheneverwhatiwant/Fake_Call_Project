@@ -28,6 +28,7 @@ const SectionContainer = styled.View`
 const SectionTitle = styled.Text<{ isDarkMode: boolean }>`
   font-size: 24px;
   font-weight: 600;
+  margin-bottom: 100px;
   color: ${({ isDarkMode }) => (isDarkMode ? Colors.white : Colors.black)};
 `;
 
@@ -84,7 +85,11 @@ function MainScreen({ navigation }: { navigation: any }): React.JSX.Element {
 
         setTimeout(() => {
           setIsLoading(false);
-          navigation.navigate('GetAFakeCall');
+          // 발신자명과 번호를 함께 전달
+          navigation.navigate('GetAFakeCall', {
+            senderName: senderName,
+            senderNumber: senderNumber,
+          });
         }, 2000);
       } catch (error) {
         console.error('Error saving sender info: ', error);
@@ -94,6 +99,7 @@ function MainScreen({ navigation }: { navigation: any }): React.JSX.Element {
       alert('발신자명과 번호를 입력해주세요.');
     }
   };
+
 
   const openPicker = () => {
     setIsPickerVisible(true);

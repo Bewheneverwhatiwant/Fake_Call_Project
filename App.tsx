@@ -14,12 +14,12 @@ function App(): React.JSX.Element {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Main">
-        <Stack.Screen name="Main" component={MainScreen} options={{ title: '메인 화면' }} />
-        <Stack.Screen name="Sub" component={SubScreen} options={{ title: '서브 화면' }} />
-        <Stack.Screen name="GetAFakeCall" component={GetAFakeCall} options={{ title: '전화왔어요' }} />
-        <Stack.Screen name="AnswerTheFakeCall" component={AnswerTheFakeCall} options={{ title: '전화받는 중' }} />
-        <Stack.Screen name="HangUpFakeCall" component={HangUpFakeCall} options={{ title: '전화 끝!' }} />
-        <Stack.Screen name="mainSetting" component={mainSetting} options={{ title: '설정' }} />
+        <Stack.Screen name="Main" component={MainScreen} options={{ headerShown: false }}  />
+        <Stack.Screen name="Sub" component={SubScreen} options={{ headerShown: false }}  />
+        <Stack.Screen name="GetAFakeCall" component={GetAFakeCall} options={{ headerShown: false }}  />
+        <Stack.Screen name="AnswerTheFakeCall" component={AnswerTheFakeCall} options={{ headerShown: false }}  />
+        <Stack.Screen name="HangUpFakeCall" component={HangUpFakeCall} options={{ headerShown: false }}  />
+        <Stack.Screen name="mainSetting" component={mainSetting} options={{ headerShown: false }}  />
 
       </Stack.Navigator>
     </NavigationContainer>

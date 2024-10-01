@@ -6,8 +6,6 @@ import Icon from 'react-native-vector-icons/Ionicons'; // Icon library
 
 import CustomButton from '../components/basic/CustomButton';
 import CustomFont from '../components/basic/CustomFont';
-
-// 이미지를 import 합니다
 import hungupImage from '../assetsAnswer/hungup.png';
 
 const Background = styled(LinearGradient)`
@@ -84,9 +82,10 @@ const HangUpButton = styled.TouchableOpacity`
   margin-bottom: 50px;
 `;
 
-function AnswerTheFakeCall({ navigation }: { navigation: any }): React.ReactElement {
+function AnswerTheFakeCall({ route, navigation }: { route: any, navigation: any }): React.ReactElement {
   const isDarkMode = useColorScheme() === 'dark';
   const [callTime, setCallTime] = useState(0);
+  const { senderNumber } = route.params;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -106,7 +105,8 @@ function AnswerTheFakeCall({ navigation }: { navigation: any }): React.ReactElem
     <Background colors={['#135252', '#06344E']} start={{ x: 0, y: 0 }} end={{ x: 0, y: 1 }}>
       {/* 상단 섹션 */}
       <TopSection>
-        <PhoneNumberText isDarkMode={isDarkMode}>010-1234-5678</PhoneNumberText>
+        {/* 전달받은 발신자 번호 표시 */}
+        <PhoneNumberText isDarkMode={isDarkMode}>{senderNumber}</PhoneNumberText>
         <TimerText isDarkMode={isDarkMode}>{formatTime(callTime)}</TimerText>
       </TopSection>
 
@@ -157,7 +157,7 @@ function AnswerTheFakeCall({ navigation }: { navigation: any }): React.ReactElem
 
       {/* 하단 전화 끊기 버튼 */}
       <HangUpButtonWrapper>
-        <HangUpButton onPress={() => navigation.navigate('HangUpFakeCall')}>
+        <HangUpButton onPress={() => navigation.navigate('HangUpFakeCall', { senderNumber })}>
           <Image source={hungupImage} style={{ width: 70, height: 70 }} />
         </HangUpButton>
       </HangUpButtonWrapper>
