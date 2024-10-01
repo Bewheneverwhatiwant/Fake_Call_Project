@@ -19,7 +19,7 @@ function App(): React.JSX.Element {
         <Stack.Screen name="GetAFakeCall" component={GetAFakeCall} options={{ headerShown: false }}  />
         <Stack.Screen name="AnswerTheFakeCall" component={AnswerTheFakeCall} options={{ headerShown: false }}  />
         <Stack.Screen name="HangUpFakeCall" component={HangUpFakeCall} options={{ headerShown: false }}  />
-        <Stack.Screen name="mainSetting" component={mainSetting} options={{ headerShown: false }}  />
+        <Stack.Screen name="mainSetting" component={mainSetting} options={{ title: '설정' }} />
 
       </Stack.Navigator>
     </NavigationContainer>
