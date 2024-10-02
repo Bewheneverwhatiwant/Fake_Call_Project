@@ -58,11 +58,20 @@ const SmallText = styled(Text)<{ isDarkMode: boolean }>`
   margin-top: 10px;
 `;
 
+const CustomColumn = styled(View)<{
+  alignitems?: string;
+  justifycontent?: string;
+}>
+  `flex-direction: column;
+  align-items: ${(props) => props.alignitems || 'flex-start'};
+  justify-content: ${(props) => props.justifycontent || 'flex-start'};
+`;
+
 const styles = StyleSheet.create({
   RejectImgStyle: { width: 91, height: 92, marginRight: 111, marginBottom: 61 },
   AnswerImgStyle: { width: 91, height: 92, marginBottom: 61 },
-  LaterImgStyle: { width: 100, height: 67, marginTop: 383, marginBottom: 79, marginRight: 111 },
-  MessageImgStyle: { width: 100, height: 67, marginTop: 383, marginBottom: 79 },
+  LaterImgStyle: { width: 100, height: 67, marginTop: 350, marginBottom: 79, marginRight: 111 },
+  MessageImgStyle: { width: 100, height: 67, marginTop: 350, marginBottom: 79 },
   HD: { width: 22, height: 17, paddingLeft: 2, paddingRight: 2, marginTop: 58, backgroundColor: '#000000', borderRadius: 2 },
   Circle: { width: 120, height: 120, backgroundColor: '#0000000', marginTop: 24, borderRadius: 100 }
 });
